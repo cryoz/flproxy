@@ -5,6 +5,7 @@ LABEL maintainer="cryoz"
 ADD --link service /etc/service/
 
 EXPOSE 8118
+ENV TOR_PREF_COUNTRIES="se,gb,nl,de,us"
 
 RUN apt update -y && apt upgrade -y && apt -y install privoxy tor torsocks runit tini curl python3 ca-certificates dnsutils --no-install-recommends \
 && addgroup --system tordocker \
@@ -20,7 +21,7 @@ RUN apt update -y && apt upgrade -y && apt -y install privoxy tor torsocks runit
 COPY <<EOT /docker-entrypoint.sh
 #!/bin/sh
 cp -f /etc/service/tor/torrc.base /etc/service/tor/torrc
-python3 /relayscanner.pyz -g 1 --timeout 5 -c ${TOR_PREF_COUNTRIES:-se,gb,nl,de,us} --torrc -o /etc/service/tor/bridges.conf > /dev/null
+python3 /relayscanner.pyz -g 1 --timeout 5 -c \${TOR_PREF_COUNTRIES} --torrc -o /etc/service/tor/bridges.conf > /dev/null
 exec "\$@"
 EOT
 
