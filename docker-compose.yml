@@ -1,0 +1,18 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - '8120:80'
+    volumes:
+      - './nginx:/etc/nginx/conf.d'
+  torprivoxy:
+    build: tpsproxy/
+    restart: unless-stopped
+    container_name: torprivoxy
+    environment:
+      TOR_PREF_COUNTRIES: se,gb,nl,de
+    # user: '[UID:GID]'
+    ports:
+      - '127.0.0.1:8119:8118'
